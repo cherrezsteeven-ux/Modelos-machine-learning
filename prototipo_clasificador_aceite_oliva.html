@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Origen del aceite · Clasificador de macro-área</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#f1eee2;
+    --ink-dim:#c9c6b6;
+    --bg:#1c2417;
+    --bg-2:#232c1c;
+    --panel:#28331f;
+    --panel-2:#2f3c25;
+    --line: rgba(241,238,226,0.12);
+    --gold:#c9a036;
+    --gold-soft: rgba(201,160,54,0.18);
+    --clay:#b5533c;
+    --clay-soft: rgba(181,83,60,0.18);
+    --sage:#93a374;
+    --south:#c9a036;
+    --centre:#7e9b6f;
+    --sardinia:#b5765c;
+    --radius: 14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 1200px 600px at 15% -10%, rgba(201,160,54,0.10), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 100% 0%, rgba(147,163,116,0.10), transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    padding: 0 0 80px 0;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding: 44px 28px 0;}
+
+  /* Header */
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:"";width:22px;height:1px;background:var(--gold);display:inline-block;}
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: clamp(30px, 4.2vw, 46px);
+    line-height:1.08;
+    margin: 14px 0 10px;
+    max-width: 16ch;
+  }
+  .lede{
+    color:var(--ink-dim);
+    max-width:62ch;
+    font-size:15.5px;
+    margin-bottom: 28px;
+  }
+  .lede b{color:var(--ink); font-weight:600;}
+
+  .metrics-strip{
+    display:flex; flex-wrap:wrap; gap:0;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    margin-bottom:36px;
+  }
+  .metric{
+    flex:1 1 160px;
+    padding:16px 20px;
+    border-right:1px solid var(--line);
+  }
+  .metric:last-child{border-right:none;}
+  .metric .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:22px;
+    color:var(--gold);
+    font-weight:600;
+  }
+  .metric .lbl{
+    font-size:12px;
+    color:var(--ink-dim);
+    margin-top:2px;
+  }
+
+  /* Grid */
+  .grid{
+    display:grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap:22px;
+  }
+  @media (max-width: 880px){ .grid{grid-template-columns:1fr;} }
+
+  .panel{
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border:1px solid var(--line);
+    border-radius: var(--radius);
+    padding:24px 24px 26px;
+  }
+  .panel h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:19px;
+    margin:0 0 4px;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px;
+  }
+  .panel .sub{
+    font-size:12.5px;
+    color:var(--ink-dim);
+    margin-bottom:18px;
+  }
+
+  /* Region preset */
+  .preset-row{
+    display:flex; gap:10px; margin-bottom:20px; flex-wrap:wrap; align-items:center;
+  }
+  select#regionSelect{
+    flex:1 1 auto;
+    background:var(--bg-2);
+    color:var(--ink);
+    border:1px solid var(--line);
+    border-radius:9px;
+    padding:10px 12px;
+    font-family:'Inter',sans-serif;
+    font-size:13.5px;
+  }
+  button.reset-btn{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--ink-dim);
+    border-radius:9px;
+    padding:10px 14px;
+    font-size:12.5px;
+    font-family:'IBM Plex Mono', monospace;
+    cursor:pointer;
+    transition: all .15s ease;
+    white-space:nowrap;
+  }
+  button.reset-btn:hover{border-color:var(--gold); color:var(--gold);}
+
+  /* Sliders */
+  .slider-row{ margin-bottom:16px; }
+  .slider-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-bottom:6px;
+  }
+  .slider-head .name{
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .slider-head .name span{
+    font-weight:400; color:var(--ink-dim); font-size:11.5px; display:block; margin-top:1px;
+  }
+  .slider-head .val{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--gold);
+    background: var(--gold-soft);
+    padding:2px 8px;
+    border-radius:6px;
+    min-width:52px;
+    text-align:center;
+  }
+  input[type=range]{
+    -webkit-appearance:none;
+    width:100%;
+    height:8px;
+    border-radius:5px;
+    background: linear-gradient(90deg, rgba(201,160,54,0.85), rgba(126,155,111,0.55));
+    outline:none;
+    margin: 4px 0 2px;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:18px; height:18px;
+    border-radius:50% 50% 50% 0;
+    transform:rotate(45deg);
+    background: var(--ink);
+    border:2px solid var(--gold);
+    cursor:pointer;
+    box-shadow:0 2px 6px rgba(0,0,0,0.4);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:16px; height:16px;
+    border-radius:50% 50% 50% 0;
+    transform:rotate(45deg);
+    background: var(--ink);
+    border:2px solid var(--gold);
+    cursor:pointer;
+  }
+  .range-minmax{
+    display:flex; justify-content:space-between;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    color: rgba(201,198,182,0.5);
+  }
+
+  /* Results panel */
+  .predicted-badge{
+    display:flex; align-items:center; gap:16px;
+    padding:18px 18px;
+    border-radius:12px;
+    background: var(--bg-2);
+    border:1px solid var(--line);
+    margin-bottom:20px;
+  }
+  .predicted-badge .drop{
+    width:44px;height:44px;border-radius:50% 50% 50% 4px;
+    background: conic-gradient(from 210deg, var(--gold), var(--sage));
+    flex:none;
+    transform:rotate(-45deg);
+  }
+  .predicted-badge .txt .k{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-dim);
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .predicted-badge .txt .v{
+    font-family:'Fraunces', serif;
+    font-size:26px; font-weight:600;
+    margin-top:2px;
+  }
+  .predicted-badge .conf{
+    margin-left:auto;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:22px;
+    color:var(--gold);
+    text-align:right;
+  }
+  .predicted-badge .conf span{display:block; font-size:10.5px; color:var(--ink-dim); font-weight:400;}
+
+  .prob-bars{ margin-bottom:24px; }
+  .prob-row{ margin-bottom:10px; }
+  .prob-row .top{ display:flex; justify-content:space-between; font-size:12.5px; margin-bottom:4px; }
+  .prob-row .top .name{ font-weight:600; }
+  .prob-track{ height:9px; border-radius:5px; background:var(--bg-2); overflow:hidden; }
+  .prob-fill{ height:100%; border-radius:5px; transition: width .35s cubic-bezier(.2,.8,.2,1); }
+
+  .shap-title{
+    font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-dim);
+    font-family:'IBM Plex Mono', monospace;
+    margin: 22px 0 4px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .shap-sub{ font-size:11.5px; color:var(--ink-dim); margin-bottom:12px; opacity:0.8;}
+  .shap-row{
+    display:grid;
+    grid-template-columns: 92px 1fr 56px;
+    align-items:center;
+    gap:8px;
+    margin-bottom:7px;
+    font-size:12px;
+  }
+  .shap-row .fname{ color:var(--ink-dim); text-align:right; }
+  .shap-bar-wrap{
+    position:relative;
+    height:16px;
+    background: var(--bg-2);
+    border-radius:4px;
+  }
+  .shap-zero{ position:absolute; top:0; bottom:0; width:1px; background: rgba(241,238,226,0.25); }
+  .shap-bar{ position:absolute; top:1px; bottom:1px; border-radius:3px; }
+  .shap-val{ font-family:'IBM Plex Mono', monospace; font-size:11px; }
+
+  .legend{ display:flex; gap:16px; font-size:11px; color:var(--ink-dim); margin-top:10px;}
+  .legend .dot{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:5px;}
+
+  /* Methodology */
+  details.method{
+    margin-top:26px;
+    border:1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 4px 24px;
+  }
+  details.method summary{
+    cursor:pointer;
+    padding:16px 0;
+    font-family:'Fraunces', serif;
+    font-size:17px;
+    font-weight:600;
+    list-style:none;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  details.method summary::-webkit-details-marker{display:none;}
+  details.method summary::after{
+    content:"+"; color:var(--gold); font-family:'IBM Plex Mono',monospace; font-size:20px;
+  }
+  details.method[open] summary::after{content:"–";}
+  .method-body{ padding-bottom:22px; color:var(--ink-dim); font-size:13.5px; }
+  .method-body h4{ color:var(--ink); font-size:14px; margin:18px 0 6px; font-family:'Inter',sans-serif;}
+  .method-body p{margin:6px 0;}
+  .method-body table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:12.5px;}
+  .method-body td, .method-body th{ padding:7px 8px; border-bottom:1px solid var(--line); text-align:left;}
+  .method-body th{ color:var(--ink); font-family:'IBM Plex Mono',monospace; font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:.05em;}
+
+  footer{
+    text-align:center;
+    color: rgba(201,198,182,0.4);
+    font-size:11.5px;
+    margin-top: 40px;
+    font-family:'IBM Plex Mono', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Prototipo interactivo · Modelo de clasificación</div>
+  <h1>¿De qué macro-área proviene este aceite de oliva?</h1>
+  <p class="lede">Ajusta la composición de ácidos grasos de una muestra y observa en tiempo real la predicción del modelo — <b>Norte-Centro</b>, <b>Cerdeña</b> o <b>Sur</b> de Italia — junto con las probabilidades y las variables que más influyen en cada predicción (valores SHAP).</p>
+
+  <div class="metrics-strip">
+    <div class="metric"><div class="num">Random Forest</div><div class="lbl">modelo seleccionado</div></div>
+    <div class="metric"><div class="num">F1-macro 1.00</div><div class="lbl">sobre conjunto de prueba (20%)</div></div>
+    <div class="metric"><div class="num">8</div><div class="lbl">ácidos grasos como predictores</div></div>
+    <div class="metric"><div class="num">60</div><div class="lbl">árboles · profundidad máx. 5</div></div>
+  </div>
+
+  <div class="grid">
+    <!-- LEFT: controls -->
+    <div class="panel">
+      <h2>Composición de la muestra</h2>
+      <div class="sub">Mueve los sliders o carga un perfil típico por región.</div>
+
+      <div class="preset-row">
+        <select id="regionSelect">
+          <option value="">— Cargar perfil típico de una región —</option>
+        </select>
+        <button class="reset-btn" id="resetBtn">↺ Restablecer</button>
+      </div>
+
+      <div id="slidersContainer"></div>
+    </div>
+
+    <!-- RIGHT: results -->
+    <div class="panel">
+      <h2>Predicción del modelo</h2>
+      <div class="sub">Se recalcula al instante con cada cambio.</div>
+
+      <div class="predicted-badge">
+        <div class="drop"></div>
+        <div class="txt">
+          <div class="k">Macro-área predicha</div>
+          <div class="v" id="predClass">—</div>
+        </div>
+        <div class="conf" id="predConf">—<span>confianza</span></div>
+      </div>
+
+      <div class="prob-bars" id="probBars"></div>
+
+      <div class="shap-title">
+        <span>Valores SHAP — impacto sobre la clase predicha</span>
+      </div>
+      <div class="shap-sub">Cuánto empuja cada variable la predicción hacia (dorado) o en contra (terracota) de la clase mostrada arriba.</div>
+      <div id="shapContainer"></div>
+      <div class="legend">
+        <span><i class="dot" style="background:var(--gold)"></i>Aumenta la probabilidad</span>
+        <span><i class="dot" style="background:var(--clay)"></i>Disminuye la probabilidad</span>
+      </div>
+    </div>
+  </div>
+
+  <details class="method">
+    <summary>Metodología y justificación del modelo</summary>
+    <div class="method-body">
+      <h4>Variable objetivo y predictores</h4>
+      <p>Se predice <b>macro.area</b> (Norte-Centro, Cerdeña, Sur) a partir de los 8 ácidos grasos (variables numéricas). La variable <b>region</b> se excluyó deliberadamente del modelo: es una clave que determina <i>macro.area</i> de forma perfecta y unívoca (cada región pertenece a una única macro-área), por lo que incluirla produciría una fuga de información (data leakage) y un modelo trivial que no aprende nada sobre la química del aceite. En este prototipo, <i>region</i> se usa solo como acceso rápido para cargar un perfil típico de composición y explorar el modelo — no entra como insumo de la predicción.</p>
+
+      <h4>Partición train/test</h4>
+      <p>Se usó un split estratificado <b>80% / 20%</b> (457 muestras de entrenamiento, 115 de prueba), manteniendo la proporción de clases en ambos conjuntos. Con solo 572 observaciones y una clase minoritaria de 98 casos (Cerdeña), una proporción como 50/50 o 70/30 dejaría muy pocos ejemplos por clase para que los árboles aprendan reglas robustas; 80/20 preserva suficiente señal de entrenamiento por clase (≈78 casos de Cerdeña en train) sin sacrificar un tamaño de prueba razonable (≈115 casos, ~20 por clase minoritaria) para estimar el desempeño con relativa estabilidad. Se complementó con validación cruzada estratificada (5 folds) sobre el conjunto de entrenamiento para confirmar que el resultado no depende de una sola partición.</p>
+
+      <h4>Modelos comparados</h4>
+      <table>
+        <tr><th>Modelo</th><th>Accuracy (test)</th><th>F1-macro (test)</th><th>F1-macro (CV 5-fold)</th></tr>
+        <tr><td>Árbol de decisión</td><td>1.00</td><td>1.00</td><td>0.997 ± 0.007</td></tr>
+        <tr><td>Random Forest</td><td>1.00</td><td>1.00</td><td>1.000 ± 0.000</td></tr>
+        <tr><td>Gradient Boosting</td><td>1.00</td><td>1.00</td><td>1.000 ± 0.000</td></tr>
+      </table>
+      <p>Los tres modelos separan perfectamente las tres macro-áreas: es un resultado genuino y ya documentado en la literatura de este conjunto de datos clásico (Forina et al.), no una fuga de datos — el perfil de ácidos grasos (sobre todo oleico, eicosenoico y linoleico) difiere marcadamente entre el sur, el centro-norte y Cerdeña por razones agroclimáticas. Se eligió <b>Random Forest</b> como modelo final para el prototipo por ser más robusto que un único árbol (menor varianza, menos sensible a una muestra atípica) y más simple de explicar de forma estable con SHAP que Gradient Boosting, cuya salida por etapas es más sensible a la elección de hiperparámetros.</p>
+
+      <h4>Métrica principal: F1-macro</h4>
+      <p>Se eligió <b>F1-macro</b> como métrica principal en lugar de accuracy porque las clases están desbalanceadas (Sur 323, Norte-Centro 151, Cerdeña 98 muestras): con accuracy simple, un modelo que acertara siempre "Sur" ya obtendría ~56% sin haber aprendido nada útil sobre Cerdeña o Norte-Centro. F1-macro promedia el F1 de cada clase con el mismo peso, así que penaliza con la misma fuerza los errores en la clase minoritaria (Cerdeña) que en la mayoritaria (Sur) — algo relevante para un cliente que necesita identificar correctamente <i>todas</i> las macro-áreas de origen, no solo la más común, por ejemplo para fines de trazabilidad o control de fraude de denominación de origen.</p>
+
+      <h4>Explicabilidad (SHAP)</h4>
+      <p>El gráfico de la derecha muestra valores tipo Shapley calculados con un algoritmo de aproximación por muestreo de permutaciones (equivalente al enfoque interventional/Kernel SHAP): se generan permutaciones aleatorias del orden de las variables y, partiendo de un conjunto de referencia (45 muestras reales tomadas del set de entrenamiento, estratificadas por clase), se mide cuánto cambia la probabilidad predicha al ir "revelando" cada variable — el promedio de esos cambios a través de muchas permutaciones es la contribución (SHAP) de esa variable. Este cálculo corre íntegramente en el navegador, junto con los 60 árboles del Random Forest, ambos embebidos en este archivo HTML.</p>
+    </div>
+  </details>
+
+  <footer>Conjunto de datos: composición de ácidos grasos de aceites de oliva italianos (Forina et al.) · 572 muestras, 9 regiones, 3 macro-áreas</footer>
+</div>
+
+<script id="embedded-data" type="application/json">
+{"MODEL": {"features": ["palmitic", "palmitoleic", "stearic", "oleic", "linoleic", "linolenic", "arachidic", "eicosenoic"], "classes": ["Centre.North", "Sardinia", "South"], "n_estimators": 60, "trees": [[{"leaf": false, "feature": 6, "threshold": 40.5, "left": 1, "right": 4}, {"leaf": false, "feature": 4, "threshold": 1035.0, "left": 2, "right": 3}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.16666666666666666, 0.0, 0.8333333333333334]}, {"leaf": false, "feature": 1, "threshold": 112.5, "left": 5, "right": 14}, {"leaf": false, "feature": 7, "threshold": 9.5, "left": 6, "right": 13}, {"leaf": false, "feature": 1, "threshold": 80.5, "left": 7, "right": 10}, {"leaf": false, "feature": 1, "threshold": 76.5, "left": 8, "right": 9}, {"leaf": true, "probs": [0.9, 0.1, 0.0]}, {"leaf": true, "probs": [0.7142857142857143, 0.2857142857142857, 0.0]}, {"leaf": false, "feature": 4, "threshold": 923.5, "left": 11, "right": 12}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 1, "threshold": 135.5, "left": 15, "right": 18}, {"leaf": false, "feature": 7, "threshold": 10.5, "left": 16, "right": 17}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 7, "threshold": 6.5, "left": 1, "right": 4}, {"leaf": false, "feature": 4, "threshold": 1053.5, "left": 2, "right": 3}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 6, "threshold": 43.0, "left": 1, "right": 4}, {"leaf": false, "feature": 2, "threshold": 187.5, "left": 2, "right": 3}, {"leaf": true, "probs": [0.2, 0.0, 0.8]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 6, "threshold": 70.5, "left": 5, "right": 16}, {"leaf": false, "feature": 0, "threshold": 1151.5, "left": 6, "right": 11}, {"leaf": false, "feature": 4, "threshold": 1010.0, "left": 7, "right": 10}, {"leaf": false, "feature": 7, "threshold": 14.0, "left": 8, "right": 9}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 5, "threshold": 23.0, "left": 12, "right": 15}, {"leaf": false, "feature": 2, "threshold": 232.5, "left": 13, "right": 14}, {"leaf": true, "probs": [0.3333333333333333, 0.0, 0.6666666666666666]}, {"leaf": true, "probs": [0.25, 0.75, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 1, "threshold": 124.0, "left": 17, "right": 24}, {"leaf": false, "feature": 3, "threshold": 7433.0, "left": 18, "right": 21}, {"leaf": false, "feature": 2, "threshold": 242.5, "left": 19, "right": 20}, {"leaf": true, "probs": [0.0, 0.9487179487179487, 0.05128205128205128]}, {"leaf": true, "probs": [0.0, 0.4, 0.6]}, {"leaf": false, "feature": 7, "threshold": 16.5, "left": 22, "right": 23}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 1, "threshold": 148.5, "left": 25, "right": 26}, {"leaf": true, "probs": [0.0, 0.2, 0.8]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 5, "threshold": 22.5, "left": 1, "right": 6}, {"leaf": false, "feature": 4, "threshold": 1069.5, "left": 2, "right": 5}, {"leaf": false, "feature": 0, "threshold": 1315.0, "left": 3, "right": 4}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.6666666666666666, 0.0, 0.3333333333333333]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 4, "threshold": 771.5, "left": 7, "right": 16}, {"leaf": false, "feature": 4, "threshold": 631.5, "left": 8, "right": 13}, {"leaf": false, "feature": 6, "threshold": 61.5, "left": 9, "right": 12}, {"leaf": false, "feature": 7, "threshold": 2.5, "left": 10, "right": 11}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.8333333333333334, 0.0, 0.16666666666666666]}, {"leaf": true, "probs": [0.7142857142857143, 0.0, 0.2857142857142857]}, {"leaf": false, "feature": 7, "threshold": 11.0, "left": 14, "right": 15}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 6, "threshold": 73.5, "left": 17, "right": 22}, {"leaf": false, "feature": 4, "threshold": 1071.5, "left": 18, "right": 19}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 0, "threshold": 1192.5, "left": 20, "right": 21}, {"leaf": true, "probs": [0.0, 0.9, 0.1]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 13.0, "left": 23, "right": 26}, {"leaf": false, "feature": 5, "threshold": 38.5, "left": 24, "right": 25}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.5, 0.5, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 7, "threshold": 6.5, "left": 1, "right": 6}, {"leaf": false, "feature": 3, "threshold": 7444.5, "left": 2, "right": 5}, {"leaf": false, "feature": 2, "threshold": 255.5, "left": 3, "right": 4}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.3333333333333333, 0.6666666666666666, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 7, "threshold": 7.0, "left": 1, "right": 10}, {"leaf": false, "feature": 6, "threshold": 55.5, "left": 2, "right": 7}, {"leaf": false, "feature": 0, "threshold": 1090.5, "left": 3, "right": 4}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 4, "threshold": 995.0, "left": 5, "right": 6}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.3333333333333333, 0.6666666666666666, 0.0]}, {"leaf": false, "feature": 3, "threshold": 7489.5, "left": 8, "right": 9}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 0, "threshold": 1200.5, "left": 1, "right": 18}, {"leaf": false, "feature": 3, "threshold": 7442.0, "left": 2, "right": 5}, {"leaf": false, "feature": 7, "threshold": 15.5, "left": 3, "right": 4}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 5, "threshold": 40.5, "left": 6, "right": 13}, {"leaf": false, "feature": 5, "threshold": 31.0, "left": 7, "right": 10}, {"leaf": false, "feature": 0, "threshold": 1185.0, "left": 8, "right": 9}, {"leaf": true, "probs": [0.9759036144578314, 0.0, 0.024096385542168676]}, {"leaf": true, "probs": [0.8, 0.0, 0.2]}, {"leaf": false, "feature": 3, "threshold": 7861.5, "left": 11, "right": 12}, {"leaf": true, "probs": [0.3333333333333333, 0.0, 0.6666666666666666]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 4, "threshold": 629.0, "left": 14, "right": 15}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 6, "threshold": 81.0, "left": 16, "right": 17}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.6666666666666666, 0.0, 0.3333333333333333]}, {"leaf": false, "feature": 5, "threshold": 15.0, "left": 19, "right": 20}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 1, "threshold": 91.0, "left": 21, "right": 24}, {"leaf": false, "feature": 7, "threshold": 2.5, "left": 22, "right": 23}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.3333333333333333, 0.6666666666666666]}, {"leaf": false, "feature": 5, "threshold": 22.5, "left": 25, "right": 26}, {"leaf": true, "probs": [0.0, 0.2857142857142857, 0.7142857142857143]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 0, "threshold": 1181.5, "left": 1, "right": 12}, {"leaf": false, "feature": 3, "threshold": 7444.5, "left": 2, "right": 5}, {"leaf": false, "feature": 3, "threshold": 7415.5, "left": 3, "right": 4}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.6, 0.4]}, {"leaf": false, "feature": 4, "threshold": 652.5, "left": 6, "right": 9}, {"leaf": false, "feature": 1, "threshold": 43.0, "left": 7, "right": 8}, {"leaf": true, "probs": [0.8333333333333334, 0.0, 0.16666666666666666]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 14.0, "left": 10, "right": 11}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 5, "threshold": 15.0, "left": 13, "right": 14}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 10.5, "left": 15, "right": 16}, {"leaf": true, "probs": [0.6, 0.2, 0.2]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 6, "threshold": 43.0, "left": 1, "right": 4}, {"leaf": false, "feature": 1, "threshold": 153.5, "left": 2, "right": 3}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.6, 0.0, 0.4]}, {"leaf": false, "feature": 0, "threshold": 1181.5, "left": 5, "right": 12}, {"leaf": false, "feature": 3, "threshold": 7483.0, "left": 6, "right": 9}, {"leaf": false, "feature": 1, "threshold": 76.0, "left": 7, "right": 8}, {"leaf": true, "probs": [0.0, 0.6666666666666666, 0.3333333333333333]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 14.0, "left": 10, "right": 11}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 1, "threshold": 77.5, "left": 13, "right": 14}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 4, "threshold": 1325.0, "left": 15, "right": 16}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 6, "threshold": 62.5, "left": 17, "right": 18}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 0.4, 0.6]}], [{"leaf": false, "feature": 5, "threshold": 20.5, "left": 1, "right": 4}, {"leaf": false, "feature": 4, "threshold": 1075.5, "left": 2, "right": 3}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 6.5, "left": 5, "right": 8}, {"leaf": false, "feature": 3, "threshold": 7494.5, "left": 6, "right": 7}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 1, "threshold": 111.0, "left": 1, "right": 20}, {"leaf": false, "feature": 3, "threshold": 7431.0, "left": 2, "right": 11}, {"leaf": false, "feature": 3, "threshold": 7224.5, "left": 3, "right": 6}, {"leaf": false, "feature": 0, "threshold": 1172.0, "left": 4, "right": 5}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.8, 0.2]}, {"leaf": false, "feature": 7, "threshold": 9.0, "left": 7, "right": 10}, {"leaf": false, "feature": 5, "threshold": 20.5, "left": 8, "right": 9}, {"leaf": true, "probs": [0.5, 0.5, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 6, "threshold": 55.5, "left": 12, "right": 17}, {"leaf": false, "feature": 7, "threshold": 2.5, "left": 13, "right": 14}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 1, "threshold": 62.5, "left": 15, "right": 16}, {"leaf": true, "probs": [0.75, 0.0, 0.25]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 15.5, "left": 18, "right": 19}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 5, "threshold": 23.0, "left": 21, "right": 24}, {"leaf": false, "feature": 6, "threshold": 44.0, "left": 22, "right": 23}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.8, 0.2]}, {"leaf": false, "feature": 6, "threshold": 94.0, "left": 25, "right": 26}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 0.5, 0.5]}], [{"leaf": false, "feature": 1, "threshold": 112.5, "left": 1, "right": 18}, {"leaf": false, "feature": 2, "threshold": 199.5, "left": 2, "right": 5}, {"leaf": false, "feature": 5, "threshold": 42.5, "left": 3, "right": 4}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.75, 0.0, 0.25]}, {"leaf": false, "feature": 3, "threshold": 7431.0, "left": 6, "right": 13}, {"leaf": false, "feature": 6, "threshold": 64.5, "left": 7, "right": 10}, {"leaf": false, "feature": 4, "threshold": 988.5, "left": 8, "right": 9}, {"leaf": true, "probs": [0.1111111111111111, 0.0, 0.8888888888888888]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 9.0, "left": 11, "right": 12}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 6, "threshold": 51.0, "left": 14, "right": 15}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 13.5, "left": 16, "right": 17}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 3, "threshold": 7590.0, "left": 19, "right": 26}, {"leaf": false, "feature": 2, "threshold": 217.5, "left": 20, "right": 21}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 0, "threshold": 1161.0, "left": 22, "right": 23}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 13.5, "left": 24, "right": 25}, {"leaf": true, "probs": [0.75, 0.0, 0.25]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 2.5, "left": 27, "right": 28}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.6, 0.0, 0.4]}], [{"leaf": false, "feature": 1, "threshold": 111.5, "left": 1, "right": 12}, {"leaf": false, "feature": 3, "threshold": 7418.0, "left": 2, "right": 5}, {"leaf": false, "feature": 4, "threshold": 1053.0, "left": 3, "right": 4}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 14.5, "left": 6, "right": 11}, {"leaf": false, "feature": 2, "threshold": 214.0, "left": 7, "right": 10}, {"leaf": false, "feature": 3, "threshold": 7745.0, "left": 8, "right": 9}, {"leaf": true, "probs": [0.6666666666666666, 0.3333333333333333, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 6.5, "left": 13, "right": 16}, {"leaf": false, "feature": 4, "threshold": 1055.5, "left": 14, "right": 15}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 0, "threshold": 1220.5, "left": 1, "right": 12}, {"leaf": false, "feature": 7, "threshold": 13.0, "left": 2, "right": 11}, {"leaf": false, "feature": 2, "threshold": 200.5, "left": 3, "right": 6}, {"leaf": false, "feature": 0, "threshold": 1097.5, "left": 4, "right": 5}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.9, 0.1, 0.0]}, {"leaf": false, "feature": 0, "threshold": 1035.0, "left": 7, "right": 8}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 5, "threshold": 15.0, "left": 9, "right": 10}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.29914529914529914, 0.7008547008547008, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 6, "threshold": 31.0, "left": 13, "right": 14}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 2, "threshold": 258.5, "left": 15, "right": 16}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 6, "threshold": 89.5, "left": 17, "right": 18}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.3333333333333333, 0.0, 0.6666666666666666]}], [{"leaf": false, "feature": 3, "threshold": 7447.5, "left": 1, "right": 12}, {"leaf": false, "feature": 3, "threshold": 7300.5, "left": 2, "right": 5}, {"leaf": false, "feature": 7, "threshold": 6.5, "left": 3, "right": 4}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 4, "threshold": 1038.5, "left": 6, "right": 11}, {"leaf": false, "feature": 2, "threshold": 266.5, "left": 7, "right": 8}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 6, "threshold": 49.0, "left": 9, "right": 10}, {"leaf": true, "probs": [0.6666666666666666, 0.0, 0.3333333333333333]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 1, "threshold": 59.5, "left": 13, "right": 16}, {"leaf": false, "feature": 7, "threshold": 14.5, "left": 14, "right": 15}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 5, "threshold": 35.5, "left": 17, "right": 22}, {"leaf": false, "feature": 6, "threshold": 59.0, "left": 18, "right": 19}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 6, "threshold": 67.5, "left": 20, "right": 21}, {"leaf": true, "probs": [0.8333333333333334, 0.0, 0.16666666666666666]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 12.5, "left": 23, "right": 24}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 5, "threshold": 30.5, "left": 1, "right": 12}, {"leaf": false, "feature": 7, "threshold": 7.0, "left": 2, "right": 11}, {"leaf": false, "feature": 5, "threshold": 12.5, "left": 3, "right": 4}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 1, "threshold": 80.5, "left": 5, "right": 8}, {"leaf": false, "feature": 0, "threshold": 1078.0, "left": 6, "right": 7}, {"leaf": true, "probs": [0.7272727272727273, 0.2727272727272727, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 5, "threshold": 29.5, "left": 9, "right": 10}, {"leaf": true, "probs": [0.03125, 0.96875, 0.0]}, {"leaf": true, "probs": [0.625, 0.375, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 4, "threshold": 652.5, "left": 13, "right": 18}, {"leaf": false, "feature": 3, "threshold": 7982.5, "left": 14, "right": 17}, {"leaf": false, "feature": 0, "threshold": 1112.5, "left": 15, "right": 16}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.8, 0.0, 0.2]}, {"leaf": true, "probs": [0.6666666666666666, 0.0, 0.3333333333333333]}, {"leaf": false, "feature": 2, "threshold": 221.5, "left": 19, "right": 26}, {"leaf": false, "feature": 6, "threshold": 80.0, "left": 20, "right": 23}, {"leaf": false, "feature": 4, "threshold": 1127.5, "left": 21, "right": 22}, {"leaf": true, "probs": [0.0, 0.1875, 0.8125]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 0, "threshold": 1221.0, "left": 24, "right": 25}, {"leaf": true, "probs": [0.2, 0.8, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 4, "threshold": 732.0, "left": 27, "right": 30}, {"leaf": false, "feature": 1, "threshold": 88.0, "left": 28, "right": 29}, {"leaf": true, "probs": [0.07142857142857142, 0.0, 0.9285714285714286]}, {"leaf": true, "probs": [0.8, 0.0, 0.2]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 0, "threshold": 1220.5, "left": 1, "right": 22}, {"leaf": false, "feature": 1, "threshold": 80.5, "left": 2, "right": 9}, {"leaf": false, "feature": 2, "threshold": 252.0, "left": 3, "right": 8}, {"leaf": false, "feature": 3, "threshold": 7452.5, "left": 4, "right": 5}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 5, "threshold": 41.0, "left": 6, "right": 7}, {"leaf": true, "probs": [0.9607843137254902, 0.0, 0.0392156862745098]}, {"leaf": true, "probs": [0.6842105263157895, 0.0, 0.3157894736842105]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 3, "threshold": 7433.0, "left": 10, "right": 17}, {"leaf": false, "feature": 2, "threshold": 207.5, "left": 11, "right": 14}, {"leaf": false, "feature": 6, "threshold": 78.0, "left": 12, "right": 13}, {"leaf": true, "probs": [0.0, 0.3333333333333333, 0.6666666666666666]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 4, "threshold": 1109.5, "left": 15, "right": 16}, {"leaf": true, "probs": [0.0, 0.75, 0.25]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 4, "threshold": 639.0, "left": 18, "right": 19}, {"leaf": true, "probs": [0.14285714285714285, 0.0, 0.8571428571428571]}, {"leaf": false, "feature": 7, "threshold": 2.5, "left": 20, "right": 21}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.8461538461538461, 0.0, 0.15384615384615385]}, {"leaf": false, "feature": 7, "threshold": 6.0, "left": 23, "right": 24}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 7, "threshold": 7.5, "left": 1, "right": 6}, {"leaf": false, "feature": 5, "threshold": 12.5, "left": 2, "right": 3}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 3, "threshold": 7479.5, "left": 4, "right": 5}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 0, "threshold": 1213.5, "left": 1, "right": 10}, {"leaf": false, "feature": 7, "threshold": 11.0, "left": 2, "right": 9}, {"leaf": false, "feature": 6, "threshold": 55.5, "left": 3, "right": 6}, {"leaf": false, "feature": 1, "threshold": 115.0, "left": 4, "right": 5}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.8181818181818182, 0.18181818181818182, 0.0]}, {"leaf": false, "feature": 4, "threshold": 938.5, "left": 7, "right": 8}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 1, "threshold": 92.5, "left": 11, "right": 12}, {"leaf": true, "probs": [0.8, 0.0, 0.2]}, {"leaf": false, "feature": 6, "threshold": 41.5, "left": 13, "right": 14}, {"leaf": true, "probs": [0.5, 0.0, 0.5]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 4, "threshold": 811.0, "left": 1, "right": 4}, {"leaf": false, "feature": 7, "threshold": 9.0, "left": 2, "right": 3}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 6.5, "left": 5, "right": 8}, {"leaf": false, "feature": 4, "threshold": 1053.5, "left": 6, "right": 7}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 3, "threshold": 7509.5, "left": 1, "right": 12}, {"leaf": false, "feature": 1, "threshold": 111.5, "left": 2, "right": 7}, {"leaf": false, "feature": 7, "threshold": 13.0, "left": 3, "right": 6}, {"leaf": false, "feature": 2, "threshold": 265.0, "left": 4, "right": 5}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.6, 0.4, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 6.5, "left": 8, "right": 11}, {"leaf": false, "feature": 5, "threshold": 21.0, "left": 9, "right": 10}, {"leaf": true, "probs": [0.6666666666666666, 0.3333333333333333, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 11.0, "left": 13, "right": 14}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 0, "threshold": 1221.0, "left": 1, "right": 18}, {"leaf": false, "feature": 3, "threshold": 7442.0, "left": 2, "right": 11}, {"leaf": false, "feature": 5, "threshold": 36.5, "left": 3, "right": 8}, {"leaf": false, "feature": 4, "threshold": 1067.0, "left": 4, "right": 5}, {"leaf": true, "probs": [0.3333333333333333, 0.6666666666666666, 0.0]}, {"leaf": false, "feature": 2, "threshold": 209.5, "left": 6, "right": 7}, {"leaf": true, "probs": [0.0, 0.5, 0.5]}, {"leaf": true, "probs": [0.0, 0.9838709677419355, 0.016129032258064516]}, {"leaf": false, "feature": 3, "threshold": 7322.0, "left": 9, "right": 10}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 0.42857142857142855, 0.5714285714285714]}, {"leaf": false, "feature": 0, "threshold": 956.0, "left": 12, "right": 15}, {"leaf": false, "feature": 4, "threshold": 666.5, "left": 13, "right": 14}, {"leaf": true, "probs": [0.25, 0.0, 0.75]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 11.0, "left": 16, "right": 17}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 6.0, "left": 19, "right": 20}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 7, "threshold": 7.5, "left": 1, "right": 10}, {"leaf": false, "feature": 6, "threshold": 52.5, "left": 2, "right": 7}, {"leaf": false, "feature": 6, "threshold": 45.5, "left": 3, "right": 4}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 3, "threshold": 7835.0, "left": 5, "right": 6}, {"leaf": true, "probs": [0.5, 0.5, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 4, "threshold": 938.5, "left": 8, "right": 9}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 3, "threshold": 7445.5, "left": 1, "right": 8}, {"leaf": false, "feature": 7, "threshold": 6.5, "left": 2, "right": 7}, {"leaf": false, "feature": 1, "threshold": 115.5, "left": 3, "right": 6}, {"leaf": false, "feature": 6, "threshold": 57.5, "left": 4, "right": 5}, {"leaf": true, "probs": [0.3, 0.7, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.3333333333333333, 0.6666666666666666, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 5, "threshold": 40.5, "left": 9, "right": 12}, {"leaf": false, "feature": 7, "threshold": 13.0, "left": 10, "right": 11}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 4, "threshold": 609.0, "left": 13, "right": 14}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 2, "threshold": 204.5, "left": 15, "right": 16}, {"leaf": true, "probs": [0.6666666666666666, 0.0, 0.3333333333333333]}, {"leaf": false, "feature": 7, "threshold": 30.0, "left": 17, "right": 18}, {"leaf": true, "probs": [0.75, 0.0, 0.25]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 3, "threshold": 7447.5, "left": 1, "right": 10}, {"leaf": false, "feature": 4, "threshold": 1055.0, "left": 2, "right": 7}, {"leaf": false, "feature": 2, "threshold": 288.5, "left": 3, "right": 4}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 2, "threshold": 304.5, "left": 5, "right": 6}, {"leaf": true, "probs": [0.3333333333333333, 0.0, 0.6666666666666666]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 7.5, "left": 8, "right": 9}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 11.0, "left": 11, "right": 12}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 0, "threshold": 1220.5, "left": 1, "right": 22}, {"leaf": false, "feature": 1, "threshold": 76.5, "left": 2, "right": 13}, {"leaf": false, "feature": 0, "threshold": 1053.0, "left": 3, "right": 6}, {"leaf": false, "feature": 5, "threshold": 29.0, "left": 4, "right": 5}, {"leaf": true, "probs": [0.3333333333333333, 0.0, 0.6666666666666666]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 2, "threshold": 225.5, "left": 7, "right": 10}, {"leaf": false, "feature": 2, "threshold": 212.0, "left": 8, "right": 9}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.75, 0.0, 0.25]}, {"leaf": false, "feature": 5, "threshold": 33.0, "left": 11, "right": 12}, {"leaf": true, "probs": [0.6, 0.4, 0.0]}, {"leaf": true, "probs": [0.1111111111111111, 0.0, 0.8888888888888888]}, {"leaf": false, "feature": 6, "threshold": 37.5, "left": 14, "right": 15}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 0, "threshold": 1179.0, "left": 16, "right": 19}, {"leaf": false, "feature": 5, "threshold": 39.0, "left": 17, "right": 18}, {"leaf": true, "probs": [0.18292682926829268, 0.8048780487804879, 0.012195121951219513]}, {"leaf": true, "probs": [0.6363636363636364, 0.2727272727272727, 0.09090909090909091]}, {"leaf": false, "feature": 6, "threshold": 77.5, "left": 20, "right": 21}, {"leaf": true, "probs": [0.08333333333333333, 0.25, 0.6666666666666666]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 3, "threshold": 7402.5, "left": 23, "right": 24}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 6, "threshold": 49.5, "left": 25, "right": 26}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 7, "threshold": 6.5, "left": 1, "right": 6}, {"leaf": false, "feature": 3, "threshold": 7444.5, "left": 2, "right": 5}, {"leaf": false, "feature": 6, "threshold": 46.5, "left": 3, "right": 4}, {"leaf": true, "probs": [0.7142857142857143, 0.2857142857142857, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 6, "threshold": 42.5, "left": 1, "right": 4}, {"leaf": false, "feature": 2, "threshold": 187.5, "left": 2, "right": 3}, {"leaf": true, "probs": [0.3333333333333333, 0.0, 0.6666666666666666]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 7.0, "left": 5, "right": 10}, {"leaf": false, "feature": 5, "threshold": 36.0, "left": 6, "right": 9}, {"leaf": false, "feature": 3, "threshold": 7529.5, "left": 7, "right": 8}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 3, "threshold": 7462.5, "left": 1, "right": 6}, {"leaf": false, "feature": 7, "threshold": 6.5, "left": 2, "right": 5}, {"leaf": false, "feature": 0, "threshold": 1187.0, "left": 3, "right": 4}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.25, 0.75, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 5, "threshold": 40.5, "left": 7, "right": 12}, {"leaf": false, "feature": 5, "threshold": 20.5, "left": 8, "right": 9}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 13.0, "left": 10, "right": 11}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 6, "threshold": 38.0, "left": 13, "right": 14}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 13.5, "left": 15, "right": 16}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 0, "threshold": 1220.5, "left": 1, "right": 20}, {"leaf": false, "feature": 1, "threshold": 80.5, "left": 2, "right": 11}, {"leaf": false, "feature": 0, "threshold": 1042.5, "left": 3, "right": 6}, {"leaf": false, "feature": 2, "threshold": 242.0, "left": 4, "right": 5}, {"leaf": true, "probs": [0.25, 0.0, 0.75]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 4, "threshold": 671.0, "left": 7, "right": 8}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 2, "threshold": 223.0, "left": 9, "right": 10}, {"leaf": true, "probs": [0.2, 0.8, 0.0]}, {"leaf": true, "probs": [0.3076923076923077, 0.0, 0.6923076923076923]}, {"leaf": false, "feature": 5, "threshold": 14.0, "left": 12, "right": 13}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 3, "threshold": 7497.5, "left": 14, "right": 17}, {"leaf": false, "feature": 4, "threshold": 1058.5, "left": 15, "right": 16}, {"leaf": true, "probs": [0.0, 0.5, 0.5]}, {"leaf": true, "probs": [0.0, 0.9647058823529412, 0.03529411764705882]}, {"leaf": false, "feature": 4, "threshold": 645.0, "left": 18, "right": 19}, {"leaf": true, "probs": [0.2, 0.0, 0.8]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 5, "threshold": 15.0, "left": 21, "right": 22}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 4, "threshold": 821.5, "left": 1, "right": 6}, {"leaf": false, "feature": 0, "threshold": 1038.0, "left": 2, "right": 3}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 12.5, "left": 4, "right": 5}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 0, "threshold": 1203.5, "left": 7, "right": 16}, {"leaf": false, "feature": 4, "threshold": 1053.5, "left": 8, "right": 11}, {"leaf": false, "feature": 6, "threshold": 49.5, "left": 9, "right": 10}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 0, "threshold": 1165.0, "left": 12, "right": 13}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 2, "threshold": 229.0, "left": 14, "right": 15}, {"leaf": true, "probs": [0.0, 0.75, 0.25]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 11.5, "left": 17, "right": 18}, {"leaf": true, "probs": [0.0, 0.6666666666666666, 0.3333333333333333]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 1, "threshold": 111.5, "left": 1, "right": 14}, {"leaf": false, "feature": 4, "threshold": 1055.0, "left": 2, "right": 13}, {"leaf": false, "feature": 0, "threshold": 1220.5, "left": 3, "right": 10}, {"leaf": false, "feature": 1, "threshold": 79.5, "left": 4, "right": 7}, {"leaf": false, "feature": 7, "threshold": 13.5, "left": 5, "right": 6}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 3, "threshold": 7608.0, "left": 8, "right": 9}, {"leaf": true, "probs": [0.75, 0.0, 0.25]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 12.5, "left": 11, "right": 12}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 0, "threshold": 1154.0, "left": 15, "right": 18}, {"leaf": false, "feature": 5, "threshold": 15.0, "left": 16, "right": 17}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.8571428571428571, 0.14285714285714285]}, {"leaf": false, "feature": 7, "threshold": 11.5, "left": 19, "right": 20}, {"leaf": true, "probs": [0.5, 0.0, 0.5]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 7, "threshold": 7.5, "left": 1, "right": 10}, {"leaf": false, "feature": 6, "threshold": 60.5, "left": 2, "right": 5}, {"leaf": false, "feature": 3, "threshold": 7393.5, "left": 3, "right": 4}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 1, "threshold": 73.5, "left": 6, "right": 7}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 4, "threshold": 938.5, "left": 8, "right": 9}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 0, "threshold": 1203.5, "left": 1, "right": 16}, {"leaf": false, "feature": 5, "threshold": 40.5, "left": 2, "right": 9}, {"leaf": false, "feature": 6, "threshold": 43.5, "left": 3, "right": 4}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 2, "threshold": 195.5, "left": 5, "right": 6}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 2, "threshold": 246.5, "left": 7, "right": 8}, {"leaf": true, "probs": [0.1125, 0.7875, 0.1]}, {"leaf": true, "probs": [0.7777777777777778, 0.2222222222222222, 0.0]}, {"leaf": false, "feature": 4, "threshold": 616.5, "left": 10, "right": 11}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 1, "threshold": 84.5, "left": 12, "right": 13}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 0, "threshold": 1130.5, "left": 14, "right": 15}, {"leaf": true, "probs": [0.14285714285714285, 0.8571428571428571, 0.0]}, {"leaf": true, "probs": [0.16666666666666666, 0.0, 0.8333333333333334]}, {"leaf": false, "feature": 7, "threshold": 6.0, "left": 17, "right": 18}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 7, "threshold": 6.5, "left": 1, "right": 4}, {"leaf": false, "feature": 4, "threshold": 1053.5, "left": 2, "right": 3}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 5, "threshold": 28.5, "left": 1, "right": 14}, {"leaf": false, "feature": 3, "threshold": 7444.5, "left": 2, "right": 7}, {"leaf": false, "feature": 1, "threshold": 141.5, "left": 3, "right": 6}, {"leaf": false, "feature": 3, "threshold": 7393.0, "left": 4, "right": 5}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.2, 0.8, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 1, "threshold": 57.5, "left": 8, "right": 9}, {"leaf": true, "probs": [0.5, 0.0, 0.5]}, {"leaf": false, "feature": 6, "threshold": 51.0, "left": 10, "right": 11}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 2.5, "left": 12, "right": 13}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.6666666666666666, 0.0, 0.3333333333333333]}, {"leaf": false, "feature": 7, "threshold": 7.5, "left": 15, "right": 28}, {"leaf": false, "feature": 5, "threshold": 36.5, "left": 16, "right": 21}, {"leaf": false, "feature": 6, "threshold": 57.5, "left": 17, "right": 18}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 2, "threshold": 228.5, "left": 19, "right": 20}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.8333333333333334, 0.16666666666666666, 0.0]}, {"leaf": false, "feature": 5, "threshold": 41.5, "left": 22, "right": 25}, {"leaf": false, "feature": 1, "threshold": 94.0, "left": 23, "right": 24}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.8333333333333334, 0.16666666666666666, 0.0]}, {"leaf": false, "feature": 4, "threshold": 745.0, "left": 26, "right": 27}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.3333333333333333, 0.6666666666666666, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 4, "threshold": 811.0, "left": 1, "right": 12}, {"leaf": false, "feature": 5, "threshold": 40.5, "left": 2, "right": 9}, {"leaf": false, "feature": 6, "threshold": 54.0, "left": 3, "right": 4}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 0, "threshold": 1043.0, "left": 5, "right": 6}, {"leaf": true, "probs": [0.3333333333333333, 0.0, 0.6666666666666666]}, {"leaf": false, "feature": 1, "threshold": 95.0, "left": 7, "right": 8}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.6666666666666666, 0.0, 0.3333333333333333]}, {"leaf": false, "feature": 7, "threshold": 9.0, "left": 10, "right": 11}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 6.5, "left": 13, "right": 18}, {"leaf": false, "feature": 6, "threshold": 43.0, "left": 14, "right": 15}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 4, "threshold": 1058.5, "left": 16, "right": 17}, {"leaf": true, "probs": [0.2, 0.8, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 3, "threshold": 7445.5, "left": 1, "right": 12}, {"leaf": false, "feature": 5, "threshold": 29.5, "left": 2, "right": 7}, {"leaf": false, "feature": 0, "threshold": 1204.0, "left": 3, "right": 4}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 11.5, "left": 5, "right": 6}, {"leaf": true, "probs": [0.25, 0.5, 0.25]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 0, "threshold": 1181.0, "left": 8, "right": 11}, {"leaf": false, "feature": 5, "threshold": 36.5, "left": 9, "right": 10}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.4, 0.6]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 2, "threshold": 232.0, "left": 13, "right": 16}, {"leaf": false, "feature": 7, "threshold": 16.0, "left": 14, "right": 15}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 5, "threshold": 23.5, "left": 17, "right": 18}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 0, "threshold": 1082.0, "left": 19, "right": 22}, {"leaf": false, "feature": 5, "threshold": 41.5, "left": 20, "right": 21}, {"leaf": true, "probs": [0.25, 0.0, 0.75]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 3, "threshold": 7645.5, "left": 23, "right": 24}, {"leaf": true, "probs": [0.15384615384615385, 0.0, 0.8461538461538461]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}], [{"leaf": false, "feature": 3, "threshold": 7447.5, "left": 1, "right": 14}, {"leaf": false, "feature": 4, "threshold": 1297.5, "left": 2, "right": 11}, {"leaf": false, "feature": 4, "threshold": 1053.0, "left": 3, "right": 6}, {"leaf": false, "feature": 7, "threshold": 15.5, "left": 4, "right": 5}, {"leaf": true, "probs": [0.2, 0.0, 0.8]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 3, "threshold": 7254.5, "left": 7, "right": 10}, {"leaf": false, "feature": 1, "threshold": 124.0, "left": 8, "right": 9}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 11.0, "left": 12, "right": 13}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 11.0, "left": 15, "right": 16}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 0, "threshold": 1240.5, "left": 1, "right": 8}, {"leaf": false, "feature": 4, "threshold": 1050.0, "left": 2, "right": 5}, {"leaf": false, "feature": 7, "threshold": 11.0, "left": 3, "right": 4}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 1, "threshold": 136.5, "left": 6, "right": 7}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 1, "threshold": 94.0, "left": 9, "right": 10}, {"leaf": true, "probs": [0.3333333333333333, 0.0, 0.6666666666666666]}, {"leaf": false, "feature": 7, "threshold": 12.5, "left": 11, "right": 12}, {"leaf": true, "probs": [0.2, 0.0, 0.8]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 7, "threshold": 6.5, "left": 1, "right": 10}, {"leaf": false, "feature": 1, "threshold": 76.0, "left": 2, "right": 5}, {"leaf": false, "feature": 3, "threshold": 7685.0, "left": 3, "right": 4}, {"leaf": true, "probs": [0.5, 0.5, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 5, "threshold": 12.5, "left": 6, "right": 7}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 3, "threshold": 7470.5, "left": 8, "right": 9}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 0, "threshold": 1192.0, "left": 1, "right": 18}, {"leaf": false, "feature": 3, "threshold": 7444.5, "left": 2, "right": 5}, {"leaf": false, "feature": 1, "threshold": 119.5, "left": 3, "right": 4}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.5, 0.5]}, {"leaf": false, "feature": 5, "threshold": 30.5, "left": 6, "right": 11}, {"leaf": false, "feature": 4, "threshold": 641.5, "left": 7, "right": 10}, {"leaf": false, "feature": 7, "threshold": 2.5, "left": 8, "right": 9}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.6666666666666666, 0.0, 0.3333333333333333]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 0, "threshold": 1082.5, "left": 12, "right": 15}, {"leaf": false, "feature": 6, "threshold": 58.0, "left": 13, "right": 14}, {"leaf": true, "probs": [0.5, 0.0, 0.5]}, {"leaf": true, "probs": [0.07407407407407407, 0.0, 0.9259259259259259]}, {"leaf": false, "feature": 2, "threshold": 265.0, "left": 16, "right": 17}, {"leaf": true, "probs": [0.9565217391304348, 0.0, 0.043478260869565216]}, {"leaf": true, "probs": [0.25, 0.0, 0.75]}, {"leaf": false, "feature": 5, "threshold": 15.5, "left": 19, "right": 20}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 1, "threshold": 88.0, "left": 21, "right": 22}, {"leaf": true, "probs": [0.5, 0.0, 0.5]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 6, "threshold": 42.5, "left": 1, "right": 6}, {"leaf": false, "feature": 6, "threshold": 39.0, "left": 2, "right": 3}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 9.5, "left": 4, "right": 5}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 0, "threshold": 1181.5, "left": 7, "right": 20}, {"leaf": false, "feature": 3, "threshold": 7470.5, "left": 8, "right": 13}, {"leaf": false, "feature": 6, "threshold": 59.5, "left": 9, "right": 12}, {"leaf": false, "feature": 6, "threshold": 49.5, "left": 10, "right": 11}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.3333333333333333, 0.6666666666666666]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 5, "threshold": 40.5, "left": 14, "right": 17}, {"leaf": false, "feature": 1, "threshold": 57.5, "left": 15, "right": 16}, {"leaf": true, "probs": [0.75, 0.0, 0.25]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 1, "threshold": 78.5, "left": 18, "right": 19}, {"leaf": true, "probs": [0.13333333333333333, 0.0, 0.8666666666666667]}, {"leaf": true, "probs": [0.8571428571428571, 0.0, 0.14285714285714285]}, {"leaf": false, "feature": 0, "threshold": 1220.5, "left": 21, "right": 24}, {"leaf": false, "feature": 7, "threshold": 9.5, "left": 22, "right": 23}, {"leaf": true, "probs": [0.42857142857142855, 0.5714285714285714, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 1, "threshold": 120.5, "left": 1, "right": 18}, {"leaf": false, "feature": 4, "threshold": 1053.5, "left": 2, "right": 17}, {"leaf": false, "feature": 5, "threshold": 40.5, "left": 3, "right": 10}, {"leaf": false, "feature": 5, "threshold": 35.5, "left": 4, "right": 7}, {"leaf": false, "feature": 6, "threshold": 59.0, "left": 5, "right": 6}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.9583333333333334, 0.0, 0.041666666666666664]}, {"leaf": false, "feature": 1, "threshold": 102.0, "left": 8, "right": 9}, {"leaf": true, "probs": [0.8666666666666667, 0.0, 0.13333333333333333]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 2, "threshold": 221.5, "left": 11, "right": 14}, {"leaf": false, "feature": 4, "threshold": 617.5, "left": 12, "right": 13}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.8, 0.0, 0.2]}, {"leaf": false, "feature": 1, "threshold": 93.0, "left": 15, "right": 16}, {"leaf": true, "probs": [0.13513513513513514, 0.0, 0.8648648648648649]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 5, "threshold": 20.5, "left": 19, "right": 22}, {"leaf": false, "feature": 2, "threshold": 230.5, "left": 20, "right": 21}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.75, 0.25, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 5, "threshold": 28.5, "left": 1, "right": 14}, {"leaf": false, "feature": 6, "threshold": 56.0, "left": 2, "right": 7}, {"leaf": false, "feature": 7, "threshold": 7.0, "left": 3, "right": 6}, {"leaf": false, "feature": 3, "threshold": 7380.0, "left": 4, "right": 5}, {"leaf": true, "probs": [0.2, 0.8, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 4, "threshold": 925.5, "left": 8, "right": 9}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 2, "threshold": 206.5, "left": 10, "right": 11}, {"leaf": true, "probs": [0.0, 0.5, 0.5]}, {"leaf": false, "feature": 1, "threshold": 115.5, "left": 12, "right": 13}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.8, 0.2]}, {"leaf": false, "feature": 1, "threshold": 108.5, "left": 15, "right": 20}, {"leaf": false, "feature": 7, "threshold": 13.0, "left": 16, "right": 19}, {"leaf": false, "feature": 3, "threshold": 7480.5, "left": 17, "right": 18}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 1, "threshold": 120.5, "left": 21, "right": 24}, {"leaf": false, "feature": 4, "threshold": 887.5, "left": 22, "right": 23}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 0.2, 0.8]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 7, "threshold": 6.5, "left": 1, "right": 4}, {"leaf": false, "feature": 4, "threshold": 1048.5, "left": 2, "right": 3}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 7, "threshold": 6.5, "left": 1, "right": 6}, {"leaf": false, "feature": 3, "threshold": 7435.5, "left": 2, "right": 5}, {"leaf": false, "feature": 6, "threshold": 45.5, "left": 3, "right": 4}, {"leaf": true, "probs": [0.75, 0.25, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 0, "threshold": 1192.0, "left": 1, "right": 16}, {"leaf": false, "feature": 6, "threshold": 55.5, "left": 2, "right": 9}, {"leaf": false, "feature": 0, "threshold": 1159.0, "left": 3, "right": 8}, {"leaf": false, "feature": 4, "threshold": 1015.0, "left": 4, "right": 7}, {"leaf": false, "feature": 6, "threshold": 51.0, "left": 5, "right": 6}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.9333333333333333, 0.0, 0.06666666666666667]}, {"leaf": true, "probs": [0.14285714285714285, 0.8571428571428571, 0.0]}, {"leaf": true, "probs": [0.3333333333333333, 0.0, 0.6666666666666666]}, {"leaf": false, "feature": 7, "threshold": 13.5, "left": 10, "right": 15}, {"leaf": false, "feature": 2, "threshold": 194.5, "left": 11, "right": 12}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 3, "threshold": 7520.5, "left": 13, "right": 14}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 4, "threshold": 805.0, "left": 17, "right": 24}, {"leaf": false, "feature": 1, "threshold": 93.0, "left": 18, "right": 21}, {"leaf": false, "feature": 3, "threshold": 7530.0, "left": 19, "right": 20}, {"leaf": true, "probs": [0.6666666666666666, 0.0, 0.3333333333333333]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 5, "threshold": 42.5, "left": 22, "right": 23}, {"leaf": true, "probs": [0.3333333333333333, 0.0, 0.6666666666666666]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 11.0, "left": 25, "right": 26}, {"leaf": true, "probs": [0.0, 0.6666666666666666, 0.3333333333333333]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 3, "threshold": 7462.5, "left": 1, "right": 12}, {"leaf": false, "feature": 5, "threshold": 25.5, "left": 2, "right": 7}, {"leaf": false, "feature": 2, "threshold": 237.0, "left": 3, "right": 6}, {"leaf": false, "feature": 3, "threshold": 7297.5, "left": 4, "right": 5}, {"leaf": true, "probs": [0.0, 0.2857142857142857, 0.7142857142857143]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 0, "threshold": 1163.5, "left": 8, "right": 11}, {"leaf": false, "feature": 2, "threshold": 230.0, "left": 9, "right": 10}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.75, 0.25]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 5, "threshold": 40.5, "left": 13, "right": 20}, {"leaf": false, "feature": 5, "threshold": 20.5, "left": 14, "right": 15}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 3, "threshold": 7644.5, "left": 16, "right": 17}, {"leaf": true, "probs": [0.2, 0.0, 0.8]}, {"leaf": false, "feature": 6, "threshold": 59.0, "left": 18, "right": 19}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.8636363636363636, 0.0, 0.13636363636363635]}, {"leaf": false, "feature": 4, "threshold": 629.0, "left": 21, "right": 22}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 0, "threshold": 1082.0, "left": 23, "right": 24}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 4, "threshold": 734.5, "left": 25, "right": 26}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.6666666666666666, 0.0, 0.3333333333333333]}], [{"leaf": false, "feature": 0, "threshold": 1244.0, "left": 1, "right": 14}, {"leaf": false, "feature": 5, "threshold": 12.5, "left": 2, "right": 3}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 6, "threshold": 50.5, "left": 4, "right": 7}, {"leaf": false, "feature": 4, "threshold": 680.0, "left": 5, "right": 6}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.16666666666666666, 0.8333333333333334, 0.0]}, {"leaf": false, "feature": 4, "threshold": 1031.0, "left": 8, "right": 11}, {"leaf": false, "feature": 5, "threshold": 40.5, "left": 9, "right": 10}, {"leaf": true, "probs": [0.85, 0.0, 0.15]}, {"leaf": true, "probs": [0.2, 0.0, 0.8]}, {"leaf": false, "feature": 7, "threshold": 8.5, "left": 12, "right": 13}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 6, "threshold": 35.0, "left": 15, "right": 16}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 6, "threshold": 93.5, "left": 17, "right": 18}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.3333333333333333, 0.0, 0.6666666666666666]}], [{"leaf": false, "feature": 0, "threshold": 1203.5, "left": 1, "right": 16}, {"leaf": false, "feature": 7, "threshold": 13.0, "left": 2, "right": 15}, {"leaf": false, "feature": 0, "threshold": 1090.5, "left": 3, "right": 10}, {"leaf": false, "feature": 6, "threshold": 59.5, "left": 4, "right": 7}, {"leaf": false, "feature": 6, "threshold": 46.0, "left": 5, "right": 6}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.8, 0.2, 0.0]}, {"leaf": false, "feature": 4, "threshold": 931.0, "left": 8, "right": 9}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 3, "threshold": 7432.5, "left": 11, "right": 14}, {"leaf": false, "feature": 2, "threshold": 259.0, "left": 12, "right": 13}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.2857142857142857, 0.7142857142857143, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 5, "threshold": 15.0, "left": 17, "right": 18}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 0, "threshold": 1217.0, "left": 19, "right": 20}, {"leaf": true, "probs": [0.0, 0.16666666666666666, 0.8333333333333334]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 3, "threshold": 7418.0, "left": 1, "right": 12}, {"leaf": false, "feature": 0, "threshold": 1192.0, "left": 2, "right": 9}, {"leaf": false, "feature": 4, "threshold": 1065.5, "left": 3, "right": 4}, {"leaf": true, "probs": [0.2857142857142857, 0.2857142857142857, 0.42857142857142855]}, {"leaf": false, "feature": 4, "threshold": 1109.5, "left": 5, "right": 8}, {"leaf": false, "feature": 0, "threshold": 1101.5, "left": 6, "right": 7}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.75, 0.25]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 0, "threshold": 1217.5, "left": 10, "right": 11}, {"leaf": true, "probs": [0.0, 0.4, 0.6]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 0, "threshold": 956.0, "left": 13, "right": 16}, {"leaf": false, "feature": 1, "threshold": 53.0, "left": 14, "right": 15}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.5, 0.0, 0.5]}, {"leaf": false, "feature": 7, "threshold": 11.0, "left": 17, "right": 22}, {"leaf": false, "feature": 0, "threshold": 1063.0, "left": 18, "right": 21}, {"leaf": false, "feature": 1, "threshold": 88.0, "left": 19, "right": 20}, {"leaf": true, "probs": [0.75, 0.25, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 5, "threshold": 20.5, "left": 1, "right": 4}, {"leaf": false, "feature": 3, "threshold": 7329.5, "left": 2, "right": 3}, {"leaf": true, "probs": [0.0, 0.8571428571428571, 0.14285714285714285]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 0, "threshold": 1181.5, "left": 5, "right": 16}, {"leaf": false, "feature": 4, "threshold": 1001.5, "left": 6, "right": 13}, {"leaf": false, "feature": 0, "threshold": 1074.5, "left": 7, "right": 10}, {"leaf": false, "feature": 7, "threshold": 13.5, "left": 8, "right": 9}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 4, "threshold": 803.0, "left": 11, "right": 12}, {"leaf": true, "probs": [0.9302325581395349, 0.0, 0.06976744186046512]}, {"leaf": true, "probs": [0.4, 0.0, 0.6]}, {"leaf": false, "feature": 0, "threshold": 1165.0, "left": 14, "right": 15}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.9166666666666666, 0.08333333333333333]}, {"leaf": false, "feature": 0, "threshold": 1221.0, "left": 17, "right": 20}, {"leaf": false, "feature": 7, "threshold": 8.5, "left": 18, "right": 19}, {"leaf": true, "probs": [0.5, 0.5, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 7, "threshold": 7.5, "left": 1, "right": 14}, {"leaf": false, "feature": 1, "threshold": 76.5, "left": 2, "right": 5}, {"leaf": false, "feature": 4, "threshold": 720.0, "left": 3, "right": 4}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.75, 0.25, 0.0]}, {"leaf": false, "feature": 6, "threshold": 42.5, "left": 6, "right": 7}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 0, "threshold": 1129.5, "left": 8, "right": 11}, {"leaf": false, "feature": 4, "threshold": 908.5, "left": 9, "right": 10}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 5, "threshold": 27.5, "left": 12, "right": 13}, {"leaf": true, "probs": [0.2, 0.8, 0.0]}, {"leaf": true, "probs": [0.8235294117647058, 0.17647058823529413, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 3, "threshold": 7475.5, "left": 1, "right": 6}, {"leaf": false, "feature": 7, "threshold": 6.5, "left": 2, "right": 5}, {"leaf": false, "feature": 0, "threshold": 1179.0, "left": 3, "right": 4}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.2, 0.8, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 1, "threshold": 79.5, "left": 7, "right": 16}, {"leaf": false, "feature": 4, "threshold": 629.5, "left": 8, "right": 11}, {"leaf": false, "feature": 3, "threshold": 7986.5, "left": 9, "right": 10}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.6666666666666666, 0.0, 0.3333333333333333]}, {"leaf": false, "feature": 0, "threshold": 1184.5, "left": 12, "right": 15}, {"leaf": false, "feature": 0, "threshold": 1109.5, "left": 13, "right": 14}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.3333333333333333, 0.0, 0.6666666666666666]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 3, "threshold": 7608.0, "left": 17, "right": 20}, {"leaf": false, "feature": 6, "threshold": 35.0, "left": 18, "right": 19}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.6, 0.0, 0.4]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}], [{"leaf": false, "feature": 7, "threshold": 6.5, "left": 1, "right": 10}, {"leaf": false, "feature": 1, "threshold": 80.5, "left": 2, "right": 5}, {"leaf": false, "feature": 3, "threshold": 7600.0, "left": 3, "right": 4}, {"leaf": true, "probs": [0.3333333333333333, 0.6666666666666666, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 3, "threshold": 7455.5, "left": 6, "right": 9}, {"leaf": false, "feature": 4, "threshold": 1079.5, "left": 7, "right": 8}, {"leaf": true, "probs": [0.2, 0.8, 0.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 6, "threshold": 42.5, "left": 1, "right": 6}, {"leaf": false, "feature": 6, "threshold": 39.0, "left": 2, "right": 3}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 3, "threshold": 7365.0, "left": 4, "right": 5}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 1, "threshold": 113.0, "left": 7, "right": 16}, {"leaf": false, "feature": 4, "threshold": 1001.5, "left": 8, "right": 15}, {"leaf": false, "feature": 5, "threshold": 40.5, "left": 9, "right": 12}, {"leaf": false, "feature": 2, "threshold": 211.5, "left": 10, "right": 11}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.7894736842105263, 0.0, 0.21052631578947367]}, {"leaf": false, "feature": 7, "threshold": 12.5, "left": 13, "right": 14}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 0, "threshold": 1130.5, "left": 17, "right": 18}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 3, "threshold": 7444.5, "left": 1, "right": 10}, {"leaf": false, "feature": 0, "threshold": 1181.0, "left": 2, "right": 5}, {"leaf": false, "feature": 6, "threshold": 52.5, "left": 3, "right": 4}, {"leaf": true, "probs": [0.0, 0.75, 0.25]}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 1, "threshold": 91.5, "left": 6, "right": 7}, {"leaf": true, "probs": [0.14285714285714285, 0.2857142857142857, 0.5714285714285714]}, {"leaf": false, "feature": 0, "threshold": 1197.5, "left": 8, "right": 9}, {"leaf": true, "probs": [0.25, 0.0, 0.75]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 7, "threshold": 11.0, "left": 11, "right": 12}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}], [{"leaf": false, "feature": 1, "threshold": 111.5, "left": 1, "right": 10}, {"leaf": false, "feature": 6, "threshold": 55.5, "left": 2, "right": 5}, {"leaf": false, "feature": 3, "threshold": 7385.5, "left": 3, "right": 4}, {"leaf": true, "probs": [0.0, 0.6, 0.4]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 7, "threshold": 9.5, "left": 6, "right": 9}, {"leaf": false, "feature": 3, "threshold": 7479.5, "left": 7, "right": 8}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 5, "threshold": 15.0, "left": 11, "right": 12}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 0, "threshold": 1161.0, "left": 13, "right": 14}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": false, "feature": 4, "threshold": 1325.0, "left": 15, "right": 16}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 6, "threshold": 59.5, "left": 17, "right": 18}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 0.2, 0.8]}], [{"leaf": false, "feature": 5, "threshold": 25.5, "left": 1, "right": 8}, {"leaf": false, "feature": 6, "threshold": 41.5, "left": 2, "right": 3}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 3, "threshold": 7581.5, "left": 4, "right": 7}, {"leaf": false, "feature": 1, "threshold": 146.0, "left": 5, "right": 6}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 6, "threshold": 79.5, "left": 9, "right": 18}, {"leaf": false, "feature": 1, "threshold": 109.5, "left": 10, "right": 17}, {"leaf": false, "feature": 1, "threshold": 83.0, "left": 11, "right": 14}, {"leaf": false, "feature": 7, "threshold": 14.0, "left": 12, "right": 13}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 0, "threshold": 1202.5, "left": 15, "right": 16}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": false, "feature": 5, "threshold": 35.5, "left": 19, "right": 22}, {"leaf": false, "feature": 3, "threshold": 7514.5, "left": 20, "right": 21}, {"leaf": true, "probs": [0.0, 1.0, 0.0]}, {"leaf": true, "probs": [1.0, 0.0, 0.0]}, {"leaf": false, "feature": 6, "threshold": 97.5, "left": 23, "right": 26}, {"leaf": false, "feature": 7, "threshold": 13.0, "left": 24, "right": 25}, {"leaf": true, "probs": [0.8, 0.2, 0.0]}, {"leaf": true, "probs": [0.0, 0.0, 1.0]}, {"leaf": true, "probs": [0.75, 0.25, 0.0]}]]}, "RANGES": {"palmitic": {"min": 610.0, "max": 1753.0, "median": 1201.0, "q25": 1095.0, "q75": 1360.0}, "palmitoleic": {"min": 15.0, "max": 280.0, "median": 110.0, "q25": 87.75, "q75": 169.25}, "stearic": {"min": 152.0, "max": 375.0, "median": 223.0, "q25": 205.0, "q75": 249.0}, "oleic": {"min": 6300.0, "max": 8410.0, "median": 7302.5, "q25": 7000.0, "q75": 7680.0}, "linoleic": {"min": 448.0, "max": 1470.0, "median": 1030.0, "q25": 770.75, "q75": 1180.75}, "linolenic": {"min": 0.0, "max": 74.0, "median": 33.0, "q25": 26.0, "q75": 40.25}, "arachidic": {"min": 0.0, "max": 105.0, "median": 61.0, "q25": 50.0, "q75": 70.0}, "eicosenoic": {"min": 1.0, "max": 58.0, "median": 17.0, "q25": 2.0, "q75": 28.0}}, "BACKGROUND": {"features": ["palmitic", "palmitoleic", "stearic", "oleic", "linoleic", "linolenic", "arachidic", "eicosenoic"], "data": [[1010.0, 90.0, 210.0, 7720.0, 970.0, 0.0, 0.0, 2.0], [1090.0, 58.0, 195.0, 7950.0, 600.0, 30.0, 42.0, 2.0], [1120.0, 70.0, 240.0, 7720.0, 730.0, 40.0, 80.0, 2.0], [610.0, 80.0, 230.0, 8410.0, 650.0, 0.0, 20.0, 3.0], [1090.0, 60.0, 195.0, 7955.0, 600.0, 28.0, 42.0, 2.0], [1090.0, 180.0, 230.0, 7590.0, 860.0, 10.0, 40.0, 2.0], [1080.0, 65.0, 180.0, 7960.0, 605.0, 25.0, 55.0, 1.0], [1110.0, 80.0, 215.0, 7910.0, 525.0, 50.0, 60.0, 1.0], [1010.0, 90.0, 350.0, 7630.0, 940.0, 10.0, 0.0, 3.0], [1170.0, 110.0, 250.0, 7620.0, 740.0, 20.0, 90.0, 1.0], [1090.0, 60.0, 195.0, 7950.0, 600.0, 32.0, 38.0, 2.0], [1220.0, 100.0, 240.0, 7890.0, 530.0, 0.0, 10.0, 2.0], [1090.0, 90.0, 280.0, 7730.0, 720.0, 50.0, 100.0, 1.0], [1280.0, 110.0, 290.0, 7490.0, 790.0, 10.0, 10.0, 2.0], [1020.0, 100.0, 270.0, 7770.0, 710.0, 40.0, 90.0, 1.0], [1061.0, 86.0, 220.0, 7421.0, 1102.0, 29.0, 79.0, 3.0], [1141.0, 95.0, 250.0, 7035.0, 1388.0, 22.0, 68.0, 2.0], [1131.0, 87.0, 233.0, 7144.0, 1307.0, 25.0, 72.0, 3.0], [1096.0, 84.0, 211.0, 7415.0, 1091.0, 30.0, 71.0, 2.0], [1184.0, 105.0, 258.0, 7020.0, 1340.0, 26.0, 66.0, 2.0], [1095.0, 88.0, 203.0, 7415.0, 1093.0, 37.0, 78.0, 1.0], [1091.0, 93.0, 222.0, 7377.0, 1113.0, 20.0, 53.0, 2.0], [1106.0, 93.0, 212.0, 7381.0, 1104.0, 35.0, 68.0, 1.0], [1114.0, 86.0, 210.0, 7359.0, 1116.0, 31.0, 83.0, 2.0], [1133.0, 110.0, 241.0, 7080.0, 1342.0, 21.0, 68.0, 3.0], [1154.0, 119.0, 257.0, 7130.0, 1253.0, 22.0, 61.0, 1.0], [1178.0, 92.0, 241.0, 7006.0, 1376.0, 22.0, 84.0, 1.0], [1108.0, 92.0, 231.0, 7367.0, 1110.0, 29.0, 62.0, 3.0], [1122.0, 104.0, 241.0, 7145.0, 1313.0, 15.0, 58.0, 1.0], [1040.0, 103.0, 228.0, 7364.0, 1173.0, 25.0, 66.0, 2.0], [1447.0, 176.0, 189.0, 6849.0, 1180.0, 42.0, 64.0, 26.0], [1346.0, 167.0, 224.0, 6959.0, 1111.0, 30.0, 49.0, 23.0], [1369.0, 104.0, 237.0, 7375.0, 775.0, 39.0, 70.0, 15.0], [1346.0, 181.0, 257.0, 7147.0, 933.0, 40.0, 60.0, 36.0], [1360.0, 167.0, 225.0, 6883.0, 1220.0, 31.0, 55.0, 27.0], [1351.0, 179.0, 170.0, 7034.0, 1154.0, 35.0, 66.0, 10.0], [1409.0, 128.0, 257.0, 7257.0, 759.0, 43.0, 57.0, 16.0], [1529.0, 215.0, 203.0, 6602.0, 1310.0, 45.0, 69.0, 27.0], [1221.0, 107.0, 221.0, 7441.0, 798.0, 54.0, 70.0, 28.0], [1252.0, 180.0, 181.0, 7055.0, 1214.0, 31.0, 59.0, 38.0], [1366.0, 147.0, 291.0, 7197.0, 783.0, 51.0, 70.0, 34.0], [1399.0, 187.0, 191.0, 6861.0, 1233.0, 38.0, 60.0, 17.0], [1454.0, 183.0, 196.0, 7057.0, 1014.0, 27.0, 46.0, 19.0], [875.0, 52.0, 243.0, 8018.0, 655.0, 41.0, 79.0, 32.0], [1198.0, 136.0, 239.0, 7639.0, 633.0, 27.0, 55.0, 19.0]]}, "REGIONS": {"Apulia.north": {"macro_area": "South", "values": {"palmitic": 1051.0, "palmitoleic": 60.0, "stearic": 236.0, "oleic": 7820.0, "linoleic": 700.0, "linolenic": 45.0, "arachidic": 75.0, "eicosenoic": 33.0}}, "Apulia.south": {"macro_area": "South", "values": {"palmitic": 1387.0, "palmitoleic": 179.0, "stearic": 208.0, "oleic": 6937.0, "linoleic": 1185.5, "linolenic": 34.0, "arachidic": 60.0, "eicosenoic": 24.0}}, "Calabria": {"macro_area": "South", "values": {"palmitic": 1298.5, "palmitoleic": 118.0, "stearic": 258.0, "oleic": 7296.0, "linoleic": 827.0, "linolenic": 45.0, "arachidic": 65.0, "eicosenoic": 28.0}}, "Liguria.east": {"macro_area": "Centre.North", "values": {"palmitic": 1155.0, "palmitoleic": 80.0, "stearic": 240.0, "oleic": 7740.0, "linoleic": 680.0, "linolenic": 30.0, "arachidic": 70.0, "eicosenoic": 2.0}}, "Liguria.west": {"macro_area": "Centre.North", "values": {"palmitic": 1035.0, "palmitoleic": 100.0, "stearic": 250.0, "oleic": 7695.0, "linoleic": 905.0, "linolenic": 0.0, "arachidic": 0.0, "eicosenoic": 2.0}}, "Sardinia.coast": {"macro_area": "Sardinia", "values": {"palmitic": 1135.0, "palmitoleic": 100.0, "stearic": 242.0, "oleic": 7080.0, "linoleic": 1330.0, "linolenic": 24.0, "arachidic": 71.0, "eicosenoic": 2.0}}, "Sardinia.inland": {"macro_area": "Sardinia", "values": {"palmitic": 1100.0, "palmitoleic": 95.0, "stearic": 218.0, "oleic": 7367.0, "linoleic": 1120.0, "linolenic": 28.0, "arachidic": 73.0, "eicosenoic": 2.0}}, "Sicily": {"macro_area": "South", "values": {"palmitic": 1222.0, "palmitoleic": 90.5, "stearic": 272.5, "oleic": 7410.5, "linoleic": 823.5, "linolenic": 43.0, "arachidic": 71.5, "eicosenoic": 38.0}}, "Umbria": {"macro_area": "Centre.North", "values": {"palmitic": 1090.0, "palmitoleic": 60.0, "stearic": 195.0, "oleic": 7955.0, "linoleic": 600.0, "linolenic": 35.0, "arachidic": 44.0, "eicosenoic": 2.0}}}, "IMPORTANCE": {"palmitic": 0.1716551620480401, "palmitoleic": 0.07561105279849241, "stearic": 0.012884206946555751, "oleic": 0.17946003645758335, "linoleic": 0.10348385740234696, "linolenic": 0.07706388176845445, "arachidic": 0.0698747191975591, "eicosenoic": 0.309967083380968}}
+</script>
+
+<script>
+const DATA = JSON.parse(document.getElementById('embedded-data').textContent);
+const MODEL = DATA.MODEL;
+const RANGES = DATA.RANGES;
+const BACKGROUND = DATA.BACKGROUND;
+const REGIONS = DATA.REGIONS;
+
+const FEATURES = MODEL.features;
+const CLASSES = MODEL.classes; // ['Centre.North','Sardinia','South']
+const CLASS_LABELS = {'Centre.North':'Norte-Centro', 'Sardinia':'Cerdeña', 'South':'Sur'};
+const CLASS_COLORS = {'Centre.North':'var(--centre)', 'Sardinia':'var(--sardinia)', 'South':'var(--south)'};
+const FEATURE_LABELS = {
+  palmitic:'Palmítico', palmitoleic:'Palmitoleico', stearic:'Esteárico', oleic:'Oleico',
+  linoleic:'Linoleico', linolenic:'Linolénico', arachidic:'Araquídico', eicosenoic:'Eicosenoico'
+};
+
+// ---------- Random Forest inference ----------
+function predictTreeProba(tree, x){
+  let idx = 0;
+  while(!tree[idx].leaf){
+    const node = tree[idx];
+    idx = (x[node.feature] <= node.threshold) ? node.left : node.right;
+  }
+  return tree[idx].probs;
+}
+function predictProba(x){
+  const n = CLASSES.length;
+  const probs = new Array(n).fill(0);
+  for(const tree of MODEL.trees){
+    const p = predictTreeProba(tree, x);
+    for(let i=0;i<n;i++) probs[i]+=p[i];
+  }
+  for(let i=0;i<n;i++) probs[i]/=MODEL.trees.length;
+  return probs;
+}
+
+// ---------- Permutation-based SHAP approximation ----------
+function mulberry32(seed){
+  return function(){
+    seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function shuffleArr(arr, rng){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(rng()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function computeShap(x, nPermutations=120, seed=7){
+  const rng = mulberry32(seed);
+  const nF = x.length, nC = CLASSES.length;
+  const phi = Array.from({length:nF}, () => new Array(nC).fill(0));
+  const bg = BACKGROUND.data;
+  const order = Array.from({length:nF}, (_,i)=>i);
+  for(let p=0; p<nPermutations; p++){
+    const perm = shuffleArr(order, rng);
+    const bgSample = bg[Math.floor(rng()*bg.length)];
+    let current = bgSample.slice();
+    let prev = predictProba(current);
+    for(const fIdx of perm){
+      current = current.slice();
+      current[fIdx] = x[fIdx];
+      const next = predictProba(current);
+      for(let c=0;c<nC;c++) phi[fIdx][c] += (next[c]-prev[c]);
+      prev = next;
+    }
+  }
+  for(let f=0; f<nF; f++) for(let c=0;c<nC;c++) phi[f][c] /= nPermutations;
+  return phi;
+}
+
+// ---------- UI: build sliders ----------
+const sliderState = {};
+const container = document.getElementById('slidersContainer');
+FEATURES.forEach(feat=>{
+  const r = RANGES[feat];
+  sliderState[feat] = r.median;
+  const row = document.createElement('div');
+  row.className='slider-row';
+  row.innerHTML = `
+    <div class="slider-head">
+      <div class="name">${FEATURE_LABELS[feat]}<span>Ácido ${FEATURE_LABELS[feat].toLowerCase()}</span></div>
+      <div class="val" id="val_${feat}">${Math.round(r.median)}</div>
+    </div>
+    <input type="range" id="slider_${feat}" min="${r.min}" max="${r.max}" step="1" value="${r.median}">
+    <div class="range-minmax"><span>${Math.round(r.min)}</span><span>${Math.round(r.max)}</span></div>
+  `;
+  container.appendChild(row);
+});
+
+// region select
+const regionSelect = document.getElementById('regionSelect');
+Object.keys(REGIONS).sort().forEach(region=>{
+  const opt = document.createElement('option');
+  opt.value = region;
+  opt.textContent = `${region.replace('.', ' ')} (${CLASS_LABELS[REGIONS[region].macro_area]})`;
+  regionSelect.appendChild(opt);
+});
+regionSelect.addEventListener('change', ()=>{
+  const region = regionSelect.value;
+  if(!region) return;
+  const vals = REGIONS[region].values;
+  FEATURES.forEach(feat=>{
+    sliderState[feat]=vals[feat];
+    document.getElementById(`slider_${feat}`).value = vals[feat];
+    document.getElementById(`val_${feat}`).textContent = Math.round(vals[feat]);
+  });
+  update();
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  regionSelect.value='';
+  FEATURES.forEach(feat=>{
+    const r = RANGES[feat];
+    sliderState[feat]=r.median;
+    document.getElementById(`slider_${feat}`).value = r.median;
+    document.getElementById(`val_${feat}`).textContent = Math.round(r.median);
+  });
+  update();
+});
+
+FEATURES.forEach(feat=>{
+  const el = document.getElementById(`slider_${feat}`);
+  el.addEventListener('input', ()=>{
+    sliderState[feat] = parseFloat(el.value);
+    document.getElementById(`val_${feat}`).textContent = Math.round(sliderState[feat]);
+    scheduleUpdate();
+  });
+});
+
+// ---------- Rendering ----------
+const probBarsEl = document.getElementById('probBars');
+const shapEl = document.getElementById('shapContainer');
+const predClassEl = document.getElementById('predClass');
+const predConfEl = document.getElementById('predConf');
+
+function render(probs, phi, predIdx){
+  // predicted badge
+  predClassEl.textContent = CLASS_LABELS[CLASSES[predIdx]];
+  predConfEl.innerHTML = `${(probs[predIdx]*100).toFixed(1)}%<span>confianza</span>`;
+
+  // probability bars, sorted by class order but highlight predicted
+  probBarsEl.innerHTML='';
+  CLASSES.forEach((c,i)=>{
+    const row = document.createElement('div');
+    row.className='prob-row';
+    row.innerHTML = `
+      <div class="top"><span class="name">${CLASS_LABELS[c]}</span><span>${(probs[i]*100).toFixed(1)}%</span></div>
+      <div class="prob-track"><div class="prob-fill" style="width:${(probs[i]*100).toFixed(1)}%; background:${CLASS_COLORS[c]}"></div></div>
+    `;
+    probBarsEl.appendChild(row);
+  });
+
+  // SHAP bars for predicted class, sorted by |phi| desc
+  const rows = FEATURES.map((f,i)=>({feat:f, val: phi[i][predIdx]}));
+  rows.sort((a,b)=>Math.abs(b.val)-Math.abs(a.val));
+  const maxAbs = Math.max(...rows.map(r=>Math.abs(r.val)), 0.001);
+  shapEl.innerHTML='';
+  rows.forEach(r=>{
+    const pct = (Math.abs(r.val)/maxAbs)*50; // half-width max since diverging from center
+    const isPos = r.val >= 0;
+    const row = document.createElement('div');
+    row.className='shap-row';
+    row.innerHTML = `
+      <div class="fname">${FEATURE_LABELS[r.feat]}</div>
+      <div class="shap-bar-wrap">
+        <div class="shap-zero" style="left:50%"></div>
+        <div class="shap-bar" style="
+          left:${isPos ? 50 : 50-pct}%;
+          width:${pct}%;
+          background:${isPos ? 'var(--gold)' : 'var(--clay)'};
+        "></div>
+      </div>
+      <div class="shap-val" style="color:${isPos?'var(--gold)':'var(--clay)'}">${isPos?'+':''}${(r.val*100).toFixed(1)}</div>
+    `;
+    shapEl.appendChild(row);
+  });
+}
+
+let updateTimer = null;
+function scheduleUpdate(){
+  clearTimeout(updateTimer);
+  updateTimer = setTimeout(update, 60);
+}
+function update(){
+  const x = FEATURES.map(f=>sliderState[f]);
+  const probs = predictProba(x);
+  let predIdx = 0;
+  for(let i=1;i<probs.length;i++) if(probs[i]>probs[predIdx]) predIdx=i;
+  const phi = computeShap(x, 100, 7);
+  render(probs, phi, predIdx);
+}
+
+update();
+</script>
+</body>
+</html>
